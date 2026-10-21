@@ -12,7 +12,7 @@ py -3 -m venv .venv
 
 Panel: http://127.0.0.1:8000
 
-Ollama musi działać na http://127.0.0.1:11434. Na GTX 1070 przy sterowniku starszym niż 570 CUDA w tej Ollamie się wywala, wtedy:
+Ollama musi działać na http://127.0.0.1:11434. 
 
 ```powershell
 $env:OLLAMA_LLM_LIBRARY = "vulkan"
