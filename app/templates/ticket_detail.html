@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{{ ticket.subject }}{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <p class="kicker">Zgłoszenie #{{ ticket.id }}</p>
+    <h1>{{ ticket.subject }}</h1>
+  </div>
+  <div class="actions">
+    <a class="button" href="/zgloszenia/{{ ticket.id }}/edytuj">Edytuj</a>
+    <a class="button ghost" href="/">Lista</a>
+  </div>
+</header>
+
+<article class="letter">
+  <p class="when">{{ ticket.created_at|dt_long }}</p>
+  <div class="letter-body">{{ ticket.body }}</div>
+</article>
+
+<section class="card reasoning">
+  <h2>Dopasowanie przez AI</h2>
+  <p>{% include "_match.html" %}</p>
+  {% if ticket.ai_status == 'oczekuje' %}
+  <p class="hint">Model jeszcze liczy to zgłoszenie. Ta strona odświeży się sama.</p>
+  {% elif ticket.ai_reasoning %}
+  <h3>Jak model to rozpracował</h3>
+  <div class="letter-body">{{ ticket.ai_reasoning }}</div>
+  {% if ticket.ai_model %}<p class="hint">Model: {{ ticket.ai_model }}</p>{% endif %}
+  {% endif %}
+</section>
+{% if ticket.ai_status == 'oczekuje' %}
+<script>setTimeout(function () { location.reload(); }, 4000);</script>
+{% endif %}
+
+<form class="danger-zone" method="post" action="/zgloszenia/{{ ticket.id }}/usun" onsubmit="return confirm('Usunąć to zgłoszenie?');">
+  <button class="button danger" type="submit">Usuń zgłoszenie</button>
+</form>
+{% endblock %}

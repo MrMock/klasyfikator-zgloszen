@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Kategorie{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <p class="kicker">Kolejki modelu</p>
+    <h1>Kategorie</h1>
+    <p class="lead">Z tej listy model wybiera dopasowanie. Gdy żadna kolejka nie pasuje do tematu i treści, wynik to brak dopasowania.</p>
+  </div>
+  <div class="actions">
+    <a class="button ghost" href="/kategorie/nowa">Nowa kategoria</a>
+    <form method="post" action="/kategorie/wyczysc" onsubmit="return confirm('Wyczyścić dopasowania i policzyć wszystkie zgłoszenia od nowa?');">
+      <button class="button" type="submit">Wyczyść i policz od nowa</button>
+    </form>
+  </div>
+</header>
+
+<p class="result-count">Dopasowane {{ counts.dopasowane }}, brak dopasowania {{ counts.brak }}{% if counts.oczekuje %}, w kolejce {{ counts.oczekuje }}{% endif %}.</p>
+
+<section class="card category-block">
+  {% for label in labels %}
+  <article class="category-row">
+    <div>
+      <h3>{{ label.name }}</h3>
+      <p class="code">{{ label.code }}</p>
+      <p>{{ label.description }}</p>
+    </div>
+    <form method="post" action="/kategorie/{{ label.id }}/usun" onsubmit="return confirm('Usunąć tę kategorię? Zgłoszenia do niej wrócą do liczenia.');">
+      <button class="button danger" type="submit">Usuń</button>
+    </form>
+  </article>
+  {% endfor %}
+</section>
+{% if counts.oczekuje %}
+<script>
+  setTimeout(function () { location.reload(); }, 4000);
+</script>
+{% endif %}
+{% endblock %}

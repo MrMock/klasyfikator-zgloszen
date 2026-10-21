@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Zgłoszenia{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <p class="kicker">Skrzynka</p>
+    <h1>Zgłoszenia</h1>
+  </div>
+  <div class="actions">
+    <form method="post" action="/kategorie/wyczysc" onsubmit="return confirm('Wyczyścić dopasowania i policzyć wszystkie zgłoszenia od nowa?');">
+      <button class="button ghost" type="submit">Policz od nowa</button>
+    </form>
+    <a class="button" href="/zgloszenia/nowe">Nowe zgłoszenie</a>
+  </div>
+</header>
+
+<form class="filters filters-simple" method="get" action="/">
+  <label>
+    <span>Szukaj w temacie i treści</span>
+    <input type="search" name="q" value="{{ query }}">
+  </label>
+  <div class="filter-actions">
+    <button class="button" type="submit">Szukaj</button>
+    {% if query %}<a href="/">Wyczyść</a>{% endif %}
+  </div>
+</form>
+
+<p class="result-count">{{ total }} {% if total == 1 %}zgłoszenie{% elif total % 10 in [2, 3, 4] and total % 100 not in [12, 13, 14] %}zgłoszenia{% else %}zgłoszeń{% endif %}{% if counts.oczekuje %} · dopasowanie liczy się w tle, gotowe {{ counts.dopasowane + counts.brak }} z {{ counts.total }}{% endif %}</p>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Nr</th>
+        <th>Data</th>
+        <th>Zgłoszenie</th>
+        <th>Dopasowanie przez AI</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ticket in tickets %}
+      <tr>
+        <td class="num">{{ ticket.id }}</td>
+        <td class="nowrap">{{ ticket.created_at|dt }}</td>
+        <td>
+          <a href="/zgloszenia/{{ ticket.id }}">{{ ticket.subject }}</a>
+          <p class="snippet">{{ ticket.body|preview }}</p>
+        </td>
+        <td>{% include "_match.html" %}</td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="4" class="empty">Nic nie pasuje do wyszukiwania.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if pages > 1 %}
+<nav class="pager" aria-label="Strony">
+  {% if page > 1 %}<a href="{{ page_href(page - 1) }}">Poprzednia</a>{% endif %}
+  {% for number in range(1, pages + 1) %}
+  {% if number == page %}
+  <span aria-current="page">{{ number }}</span>
+  {% else %}
+  <a href="{{ page_href(number) }}">{{ number }}</a>
+  {% endif %}
+  {% endfor %}
+  {% if page < pages %}<a href="{{ page_href(page + 1) }}">Następna</a>{% endif %}
+</nav>
+{% endif %}
+{% if counts.oczekuje %}
+<script>
+  setTimeout(function () {
+    var el = document.activeElement;
+    if (!el || (el.tagName !== "INPUT" && el.tagName !== "TEXTAREA")) location.reload();
+  }, 4000);
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,9 @@
+{% if ticket.ai_status == 'dopasowane' %}
+<span class="badge match">{{ category_names.get(ticket.ai_category_code, ticket.ai_category_code) }}</span>
+{% elif ticket.ai_status == 'brak' %}
+<span class="badge match-brak">Brak dopasowania</span>
+{% elif ticket.ai_status == 'blad' %}
+<span class="badge match-error">Błąd dopasowania</span>
+{% else %}
+<span class="badge match-wait">Liczenie…</span>
+{% endif %}

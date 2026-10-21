@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Zgłoszenia{% endblock %} · Helpdesk Meridian</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <a class="skip" href="#tresc">Przejdź do treści</a>
+  <div class="shell">
+    <aside class="side">
+      <a class="brand" href="/">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>
+          <strong>Helpdesk IT</strong>
+          <small>Zgłoszenia</small>
+        </span>
+      </a>
+      <nav>
+        <a href="/" {% if nav == 'zgloszenia' %}aria-current="page"{% endif %}>Zgłoszenia</a>
+        <a href="/kategorie" {% if nav == 'kategorie' %}aria-current="page"{% endif %}>Kategorie</a>
+      </nav>
+      <p class="side-note">Zgłoszenie to temat, treść i data. Kategorię wskaże model na podstawie tych dwóch tekstów.</p>
+    </aside>
+    <main id="tresc">
+      {% if flash %}<p class="flash" role="status">{{ flash }}</p>{% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>
